@@ -38,7 +38,6 @@ def cssi_sanitizer(text):
 menu = ["チョコレートケーキ, チョコケーキ, chocolatecake", "チーズケーキ, cheesecake", "バナナケーキ, bananacake"]
 
 ~~~
-
 @app.route("/")
 def top():
     cake = request.args.get("cake", "チョコレートケーキ")
